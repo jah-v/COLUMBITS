@@ -12,9 +12,9 @@ typedef struct {
 
 typedef struct {
     _WIDGET* widgets;
-    uint16_t widget_number;
+    uint8_t widget_number;
     uint16_t size; 
-    uint8_t style; 
+    uint8_t shape, style; 
 } _WIDGET_BAR;
 
 _WIDGET_BAR NEW_WIDGET_BAR();

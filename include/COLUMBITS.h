@@ -58,7 +58,7 @@ _BITMAP* DRAW_CIRCLE(
                     _BITMAP* bitmap, _COLOR color
 );
 
-_RECTANGLE DRAW_ROUNDTANGLE(
+_BITMAP* DRAW_ROUNDTANGLE(
                     uint16_t a_x, uint16_t a_y,
                     uint16_t b_x, uint16_t b_y,
                     uint8_t roundness,
@@ -77,6 +77,42 @@ _BITMAP* DRAW_TEXT(
                     _TEXT* text,
                     _RECTANGLE parent
 );
+
+_BITMAP* DRAW_ROUNDTANGLE(
+                    uint16_t a_x, uint16_t a_y,
+                    uint16_t b_x, uint16_t b_y,
+                    uint8_t roundness, // 255 is full roundness
+                    _COLOR color
+) {
+    c_x = smaller_of(a_x, b_x);
+    c_y = smaller_of(a_y, b_y);
+    d_x = larger_of(a_x, b_x);
+    d_y = larger_of(a_y, b_y);
+
+    uint16_t radius = (d_y - cy) / 256) * (roundness / 2);
+
+    DRAW_RECTANGLE( c_x + radius, c_y + radius,
+                    d_x - radius, d_y - radius,
+                    bitmap, color);
+
+    if (roundness = 255) {
+        DRAW_CIRCLE(c_x + radius, c_y + radius, 
+                    radius, bitmap, color);
+        DRAW_CIRCLE(d_x - radius, c_y + radius, 
+                    radius, bitmap, color);
+    } else {
+        DRAW_CIRCLE(c_x + radius, c_y + radius, 
+                    radius, bitmap, color);
+        DRAW_CIRCLE(d_x - radius, c_y + radius, 
+                    radius, bitmap, color);
+        DRAW_CIRCLE(c_x + radius, d_y - radius, 
+                    radius, bitmap, color);
+        DRAW_CIRCLE(d_x - radius, d_y - radius, 
+                    radius, bitmap, color);
+    }
+    return bitmap;
+}
+
 
 _BITMAP* DRAW_CIRCLE(
                     uint16_t x, uint16_t y,
