@@ -53,10 +53,9 @@ _RECTANGLE DRAW_RECTANGLE(
 );
 
 _BITMAP* DRAW_CIRCLE(
-                    uint16_t x,
-                    uint16_t y,
+                    uint16_t x, uint16_t y,
                     uint16_t radius,
-                    _COLOR color
+                    _BITMAP* bitmap, _COLOR color
 );
 
 _RECTANGLE DRAW_ROUNDTANGLE(
@@ -79,12 +78,29 @@ _BITMAP* DRAW_TEXT(
                     _RECTANGLE parent
 );
 
+_BITMAP* DRAW_CIRCLE(
+                    uint16_t x, uint16_t y,
+                    uint16_t radius,
+                    _BITMAP* bitmap, _COLOR color
+) {
+    for (int b = (y - radius); b < (y + radius); ++b) {
+        for (int a = (x - radius); a < (x + radius); ++a) {
+            if (distance_from(a, b, x, y) < radius) {
+                bitmap->pixels[(b * bitmap->w) + a].r = color.r;
+                bitmap->pixels[(b * bitmap->w) + a].g = color.g;
+                bitmap->pixels[(b * bitmap->w) + a].b = color.b;
+                bitmap->pixels[(b * bitmap->w) + a].a = 255;
+            } 
+        }
+    }
+    return bitmap;
+}
+
 _RECTANGLE DRAW_RECTANGLE(
                     uint16_t a_x, uint16_t a_y,
                     uint16_t b_x, uint16_t b_y,
                     _BITMAP* bitmap, _COLOR color
 ) {
-
     for (int y = smaller_of(a_y, b_y); y < larger_of(a_y, b_y); ++y) {
         for (int x = smaller_of(a_x, b_x); y < larger_of(a_x, b_x); ++x) {
             bitmap->pixels[(y*bitmap->w + x)].r = color.r;
@@ -101,7 +117,6 @@ _BITMAP CREATE_BITMAP(
                     uint16_t w, uint16_t h,
                     _COLOR color
 ) {
-
     _PIXEL* pixels = (_PIXEL*)malloc(w*h*sizeof(_PIXEL));
     _BITMAP bmp = {pixels, w, h};
 
