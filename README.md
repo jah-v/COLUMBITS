@@ -1,3 +1,8 @@
+# COLUMBITS
+
+## A lightweight, modular, software rendering engine library. Header-only library written in C.
+
+
 The Lowdown:
 
 - COLUMBITS.h: Contains core drawing primitives and bitmap manipulation algorithms; A collection of device-independent intermediate functions. Requires either a custom front and backend implementation, or one of the header files included in order to successfully display a window. 
