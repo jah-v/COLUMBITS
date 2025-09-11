@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#include <cmath>
+#include <math.h>
 
 typedef struct {    uint8_t r, g, b, flags;     } _COLOR;
 typedef struct {    uint8_t r, g, b, a;         } _PIXEL;
@@ -16,10 +16,10 @@ typedef struct {    uint16_t a_x, a_y, b_x, b_y;
 
 typedef struct {    _TEXTURE* t;
                     uint16_t w, h;              } _FONT;
-                
 typedef struct {    char* str; 
                     uint16_t str_length, font_size;
                     _FONT* font;
+                    _COLOR color;
                     uint8_t style;              } _TEXT;
 
 
@@ -106,27 +106,57 @@ _BITMAP* DRAW_ROUNDTANGLE(
     uint16_t d_x = larger_of(a_x, b_x);
     uint16_t d_y = larger_of(a_y, b_y);
 
-    uint16_t radius = ((d_y - c_y) / 256) * (roundness / 2);
+    uint16_t rect_offset_x = (d_x - c_x) * (roundness / 512);
+    uint16_t rect_offset_y = (d_y - c_y) * (roundness / 512);
 
-    DRAW_RECTANGLE( c_x + radius, c_y + radius,
-                    d_x - radius, d_y - radius,
-                    bitmap, color);
+    if (rect_offset_x < rect_offset_y) {
+       
+        DRAW_RECTANGLE( c_x + rect_offset_x, c_y,
+                        d_x - rect_offset_x, d_y,
+                        bitmap, color);
 
-    if (roundness = 255) {
-        DRAW_CIRCLE(c_x + radius, c_y + radius, 
-                    radius, bitmap, color);
-        DRAW_CIRCLE(d_x - radius, c_y + radius, 
-                    radius, bitmap, color);
+        if (round < 254) {
+            DRAW_CIRCLE(c_x + rect_offset_x, c_y + rect_offset_x,
+                        rect_offset_x, bitmap, color);
+            DRAW_CIRCLE(d_x - rect_offset_x, c_y + rect_offset_x,
+                        rect_offset_x, bitmap, color);
+        } else {
+            DRAW_CIRCLE(c_x + rect_offset_x, c_y + rect_offset_x,
+                        rect_offset_x, bitmap, color);
+            DRAW_CIRCLE(d_x - rect_offset_x, c_y + rect_offset_x,
+                        rect_offset_x, bitmap, color);
+
+
+
+            DRAW_CIRCLE(c_x + rect_offset_x, d_y - rect_offset_x,
+                        rect_offset_x, bitmap, color);
+            DRAW_CIRCLE(d_x - rect_offset_x, d_y - rect_offset_x,
+                        rect_offset_x, bitmap, color);
+        }
     } else {
-        DRAW_CIRCLE(c_x + radius, c_y + radius, 
-                    radius, bitmap, color);
-        DRAW_CIRCLE(d_x - radius, c_y + radius, 
-                    radius, bitmap, color);
-        DRAW_CIRCLE(c_x + radius, d_y - radius, 
-                    radius, bitmap, color);
-        DRAW_CIRCLE(d_x - radius, d_y - radius, 
-                    radius, bitmap, color);
+
+        DRAW_RECTANGLE( c_x, c_y + rect_offset_y,
+                        d_x, d_y - rect_offset_y,
+                        bitmap, color);
+
+        if (round < 254) {
+            DRAW_CIRCLE(c_x + rect_offset_y, c_y + rect_offset_y,
+                        rect_offset_y, bitmap, color);
+            DRAW_CIRCLE(c_x + rect_offset_y, d_y - rect_offset_y,
+                        rect_offset_y, bitmap, color);
+        } else {
+            DRAW_CIRCLE(c_x + rect_offset_y, c_y + rect_offset_y,
+                        rect_offset_y, bitmap, color);
+            DRAW_CIRCLE(c_x + rect_offset_y, d_y - rect_offset_y,
+                        rect_offset_y, bitmap, color);
+
+            DRAW_CIRCLE(d_x - rect_offset_y, c_y + rect_offset_y,
+                        rect_offset_y, bitmap, color);
+            DRAW_CIRCLE(d_x - rect_offset_y, d_y - rect_offset_y,
+                        rect_offset_y, bitmap, color);
+        };
     }
+    
     return bitmap;
 }
 

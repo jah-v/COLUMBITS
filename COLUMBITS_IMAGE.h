@@ -1,0 +1,3 @@
+#ifndef COLUMBITS_IMAGE_H
+#define COLUMBITS_IMAGE_H
+#endif // COLUMBITS_IMAGE_H
