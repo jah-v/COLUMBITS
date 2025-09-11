@@ -7,6 +7,8 @@ The Lowdown:
 
 - COLUMBITS.h: Contains core drawing primitives and bitmap manipulation algorithms; A collection of device-independent intermediate functions. Requires either a custom front and backend implementation, or one of the header files included in order to successfully display a window. 
 
+- COLUMBITS_WINDOW.h: Contacts native APIs, contains functions to swap a bitmap to a window.
+
 - COLUMBITS_VECTOR.h: Contains higher-level geometric algorithms and rasterization methods. 
 
 - COLUMBITS_IMAGE.h: Contains image format parsing for .png files.

@@ -3,26 +3,17 @@
 
 #include "COLUMBITS.h"
 
-#ifdef COLUMBITS_SDL
-typedef struct {
-
-} _EVENT;
-#elif defined(COLUMBITS_WINAPI)
-typedef struct {
-
-} _EVENT;
-#elif defined(COLUMBITS_MACAPI)
-typedef struct {
-
-} _EVENT;
-#elif defined(COLUMBITS_LINAPI)
-typedef struct {
-
-} _EVENT;
-#else
+#if   defined(WINDOW_WINAPI)
+typedef struct {} _EVENT;
+#elif defined(WINDOW_MACAPI)
+typedef struct {} _EVENT;
+#elif defined(WINDOW_LINAPI)
+typedef struct {} _EVENT;
+#elif defined(WINDOW_CUSTOMAPI)
 typedef struct {
   uint16_t flags;
 } _EVENT;
+#endif
 
 typedef struct {
   _TEXT text;
