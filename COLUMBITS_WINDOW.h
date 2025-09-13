@@ -1,14 +1,60 @@
 #ifndef COLUMBITS_WINDOW_H
 #define COLUMBITS_WINDOW_H
 
-#if     defined(WINDOW_WINAPI)
+#include "COLUMBITS.h"
+#include <stdbool.h>
 
-#elif   defined(WINDOW_MACAPI)
+typedef void* _WINDOW_HANDLE;
 
-#elif   defined(WINDOW_LINAPI)
+typedef enum {
+    EVENT_NONE = 0,
+    EVENT_QUIT,
+    EVENT_RESIZE,
+    EVENT_KEY_DOWN,
+    EVENT_KEY_UP,
+    EVENT_MOUSE_MOVE,
+    EVENT_MOUSE_DOWN,
+    EVENT_MOUSE_UP,
+    EVENT_REDRAW    
+} _EVT_TYPE;
 
-#elif   defined(WINDOW_CUSTOMAPI)
+typedef struct {
+    _EVT_TYPE type;
+    union {
+        struct {uint16_t w, h; } resize;
+        struct { uint32_t keycode; } key;
+        struct { int16_t x, y; uint8_t button; } mouse;
+    } data;
+} _EVT;
 
-#endif
+typedef struct {
+    WINDOW_HANDLE (*create_window)(const char* title, uint16_t width, uint16_t height);
+    void (*destroy_window)(WINDOW_HANDLE window);
+    void (*show_window)(WINDOW_HANDLE window);
+    void (*hide_window)(WINDOW_HANDLE window);
+    
+    // Event handling
+    bool (*poll_event)(WINDOW_HANDLE window, WINDOW_EVENT* event);
+    void (*wait_event)(WINDOW_HANDLE window, WINDOW_EVENT* event);
+    
+    // Rendering
+    void (*present_bitmap)(WINDOW_HANDLE window, _BITMAP* bitmap);
+    void (*get_window_size)(WINDOW_HANDLE window, uint16_t* width, uint16_t* height);
+    
+    // Platform specific
+    void (*init_platform)(void);
+    void (*shutdown_platform)(void);
+} _WINDOW_PLATFORM
+
+extern WINDOW_PLATFORM* g_platform;
+
+// Convenience macros for cleaner API
+#define CREATE_WINDOW(title, w, h) g_platform->create_window(title, w, h)
+#define DESTROY_WINDOW(window) g_platform->destroy_window(window)
+#define SHOW_WINDOW(window) g_platform->show_window(window)
+#define POLL_EVENT(window, event) g_platform->poll_event(window, event)
+#define PRESENT_BITMAP(window, bitmap) g_platform->present_bitmap(window, bitmap)
+#define INIT_PLATFORM() g_platform->init_platform()
+#define SHUTDOWN_PLATFORM() g_platform->shutdown_platform()
 
 #endif // COLUMBITS_WINDOW_H

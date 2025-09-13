@@ -23,18 +23,14 @@ typedef struct {    char* str;
                     uint8_t style;              } _TEXT;
 
 
-uint16_t larger_of(
-                    uint16_t a, uint16_t b
-);
-
-uint16_t smaller_of(
-                    uint16_t a, uint16_t b
-);
-
-uint32_t distance_from(
+inline uint16_t larger_of( uint16_t a, uint16_t b );
+inline uint16_t smaller_of( uint16_t a, uint16_t b);
+inline uint32_t distance_from(
                     uint16_t a_x, uint16_t a_y,
                     uint16_t b_x, uint16_t b_y
 );
+
+void REPORT_ERROR();
 
 _BITMAP CREATE_BITMAP(
                     uint16_t w, uint16_t h,
@@ -76,6 +72,7 @@ _BITMAP* DRAW_ROUNDTANGLE(
                     uint16_t a_x, uint16_t a_y,
                     uint16_t b_x, uint16_t b_y,
                     uint8_t roundness,
+                    _BITMAP* bitmap
                     _COLOR color
 );
 
@@ -189,12 +186,35 @@ _RECTANGLE DRAW_RECTANGLE(
             bitmap->pixels[(y*bitmap->w + x)].r = color.r;
             bitmap->pixels[(y*bitmap->w + x)].g = color.g;
             bitmap->pixels[(y*bitmap->w + x)].b = color.b;
-            bitmap->pixels[(y*bitmap->w + x)].a = 256;
+            bitmap->pixels[(y*bitmap->w + x)].a = 255;
         } 
     };
     _RECTANGLE rect = {a_x, a_y, b_x, b_y, color};
     return rect;
 }
+
+_BITMAP* MERGE_BITMAPS(
+                    _BITMAP* parent,
+                    _BITMAP* child,
+                    uint16_t child_x,
+                    uint16_t child_y
+) {
+    if (child->w < parent->w && child->h < parent->h) { 
+        for (int y = child_y; y < parent->h; ++y) {
+            for (int x = child_x; x < parent->w; ++x) {
+                parent->pixels[(y * parent->w) + x].r = child->pixels[(y * child->w)].r;
+                parent->pixels[(y * parent->w) + x].g = child->pixels[(y * child->w)].g;
+                parent->pixels[(y * parent->w) + x].b = child->pixels[(y * child->w)].b;
+                parent->pixels[(y * parent->w) + x].a = child->pixels[(y * child->w)].a;
+        }
+    } 
+} else {
+
+    REPORT_ERROR();
+    return parent;
+}
+}
+
 
 _BITMAP CREATE_BITMAP(
                     uint16_t w, uint16_t h,
@@ -209,9 +229,7 @@ _BITMAP CREATE_BITMAP(
         bmp.pixels[i].b = color.b;
         bmp.pixels[i].a = 255;
 
-    };
-
-    return bmp;
+    }; return bmp;
 } 
 
 uint32_t distance_from(
@@ -228,7 +246,7 @@ uint16_t larger_of(
 ) {
     if (a < b) { return b; }
     else if (a > b) { return a; }
-    else if (a == b) { return 0; }
+    else if (a == b) { return 0; };
 }
 
 uint16_t smaller_of(
@@ -236,7 +254,7 @@ uint16_t smaller_of(
 ) {
     if (a < b) { return a; }
     else if (a > b) { return b; }
-    else if (a == b) { return 0; }
+    else if (a == b) { return 0; };
 }
 
 #endif // COLUMBITS_H
