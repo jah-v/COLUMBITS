@@ -103,57 +103,29 @@ _BITMAP* DRAW_ROUNDTANGLE(
     uint16_t d_x = larger_of(a_x, b_x);
     uint16_t d_y = larger_of(a_y, b_y);
 
-    uint16_t rect_offset_x = (d_x - c_x) * (roundness / 512);
-    uint16_t rect_offset_y = (d_y - c_y) * (roundness / 512);
+    uint16_t width = d_x - c_x;
+    uint16_t height = d_y - c_y;
+    uint16_t min_side = (width < height) ? width : height;
 
-    if (rect_offset_x < rect_offset_y) {
-       
-        DRAW_RECTANGLE( c_x + rect_offset_x, c_y,
-                        d_x - rect_offset_x, d_y,
-                        bitmap, color);
+    // scale radius proportionally
+    uint16_t radius = (min_side / 2) * roundness / 255;
 
-        if (roundness < 254) {
-            DRAW_CIRCLE(c_x + rect_offset_x, c_y + rect_offset_x,
-                        rect_offset_x, bitmap, color);
-            DRAW_CIRCLE(d_x - rect_offset_x, c_y + rect_offset_x,
-                        rect_offset_x, bitmap, color);
-        } else {
-            DRAW_CIRCLE(c_x + rect_offset_x, c_y + rect_offset_x,
-                        rect_offset_x, bitmap, color);
-            DRAW_CIRCLE(d_x - rect_offset_x, c_y + rect_offset_x,
-                        rect_offset_x, bitmap, color);
+    // center rectangle (without rounded corners)
+    DRAW_RECTANGLE(c_x + radius, c_y,
+        d_x - radius, d_y,
+        bitmap, color);
+    DRAW_RECTANGLE(c_x, c_y + radius,
+        d_x, d_y - radius,
+        bitmap, color);
 
-
-
-            DRAW_CIRCLE(c_x + rect_offset_x, d_y - rect_offset_x,
-                        rect_offset_x, bitmap, color);
-            DRAW_CIRCLE(d_x - rect_offset_x, d_y - rect_offset_x,
-                        rect_offset_x, bitmap, color);
-        }
-    } else {
-
-        DRAW_RECTANGLE( c_x, c_y + rect_offset_y,
-                        d_x, d_y - rect_offset_y,
-                        bitmap, color);
-
-        if (roundness < 254) {
-            DRAW_CIRCLE(c_x + rect_offset_y, c_y + rect_offset_y,
-                        rect_offset_y, bitmap, color);
-            DRAW_CIRCLE(c_x + rect_offset_y, d_y - rect_offset_y,
-                        rect_offset_y, bitmap, color);
-        } else {
-            DRAW_CIRCLE(c_x + rect_offset_y, c_y + rect_offset_y,
-                        rect_offset_y, bitmap, color);
-            DRAW_CIRCLE(c_x + rect_offset_y, d_y - rect_offset_y,
-                        rect_offset_y, bitmap, color);
-
-            DRAW_CIRCLE(d_x - rect_offset_y, c_y + rect_offset_y,
-                        rect_offset_y, bitmap, color);
-            DRAW_CIRCLE(d_x - rect_offset_y, d_y - rect_offset_y,
-                        rect_offset_y, bitmap, color);
-        };
+    // 4 rounded corners
+    if (radius > 0) {
+        DRAW_CIRCLE(c_x + radius, c_y + radius, radius, bitmap, color); // top-left
+        DRAW_CIRCLE(d_x - radius, c_y + radius, radius, bitmap, color); // top-right
+        DRAW_CIRCLE(c_x + radius, d_y - radius, radius, bitmap, color); // bottom-left
+        DRAW_CIRCLE(d_x - radius, d_y - radius, radius, bitmap, color); // bottom-right
     }
-    
+
     return bitmap;
 }
 
@@ -163,16 +135,22 @@ _BITMAP* DRAW_CIRCLE(
                     uint16_t radius,
                     _BITMAP* bitmap, _COLOR color
 ) {
-    for (int b = (y - radius); b < (y + radius); ++b) {
-        for (int a = (x - radius); a < (x + radius); ++a) {
-            if (distance_from(a, b, x, y) < radius) {
-                bitmap->pixels[(b * bitmap->w) + a].r = color.r;
-                bitmap->pixels[(b * bitmap->w) + a].g = color.g;
-                bitmap->pixels[(b * bitmap->w) + a].b = color.b;
-                bitmap->pixels[(b * bitmap->w) + a].a = 255;
-            } 
+    for (int16_t b = (int16_t)(y - radius); b <= (int16_t)(y + radius); ++b) {
+    for (int16_t a = (int16_t)(x - radius); a <= (int16_t)(x + radius); ++a) {
+        // check bounds
+        if (a >= 0 && a < bitmap->w && b >= 0 && b < bitmap->h) {
+            // real Euclidean distance
+            int16_t dx = a - x;
+            int16_t dy = b - y;
+            if (dx * dx + dy * dy <= radius * radius) {
+                bitmap->pixels[b * bitmap->w + a].r = color.r;
+                bitmap->pixels[b * bitmap->w + a].g = color.g;
+                bitmap->pixels[b * bitmap->w + a].b = color.b;
+                bitmap->pixels[b * bitmap->w + a].a = 255;
+            }
         }
     }
+}
     return bitmap;
 }
 
@@ -241,20 +219,7 @@ uint32_t distance_from(
     return distance;
 }
 
-uint16_t larger_of(
-                    uint16_t a, uint16_t b
-) {
-    if (a < b) { return b; }
-    else if (a > b) { return a; }
-    else if (a == b) { return 0; };
-}
-
-uint16_t smaller_of(
-                    uint16_t a, uint16_t b
-) {
-    if (a < b) { return a; }
-    else if (a > b) { return b; }
-    else if (a == b) { return 0; };
-}
+inline uint16_t larger_of(uint16_t a, uint16_t b) { return (a > b) ? a : b; }
+inline uint16_t smaller_of(uint16_t a, uint16_t b) { return (a < b) ? a : b; }
 
 #endif // COLUMBITS_H
