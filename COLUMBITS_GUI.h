@@ -3,16 +3,8 @@
 
 #include "COLUMBITS.h"
 
-#if   defined(WINDOW_WINAPI)
-typedef struct {} _EVENT;
-#elif defined(WINDOW_MACAPI)
-typedef struct {} _EVENT;
-#elif defined(WINDOW_LINAPI)
-typedef struct {} _EVENT;
-#elif defined(WINDOW_CUSTOMAPI)
-typedef struct {
-  uint16_t flags;
-} _EVENT;
+#ifndef CUSTOM_WINDOWING
+#include "COLUMBITS_WINDOW.h"
 #endif
 
 typedef struct {
