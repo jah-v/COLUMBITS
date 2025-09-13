@@ -72,7 +72,7 @@ _BITMAP* DRAW_ROUNDTANGLE(
                     uint16_t a_x, uint16_t a_y,
                     uint16_t b_x, uint16_t b_y,
                     uint8_t roundness,
-                    _BITMAP* bitmap
+                    _BITMAP* bitmap,
                     _COLOR color
 );
 
@@ -112,7 +112,7 @@ _BITMAP* DRAW_ROUNDTANGLE(
                         d_x - rect_offset_x, d_y,
                         bitmap, color);
 
-        if (round < 254) {
+        if (roundness < 254) {
             DRAW_CIRCLE(c_x + rect_offset_x, c_y + rect_offset_x,
                         rect_offset_x, bitmap, color);
             DRAW_CIRCLE(d_x - rect_offset_x, c_y + rect_offset_x,
@@ -136,7 +136,7 @@ _BITMAP* DRAW_ROUNDTANGLE(
                         d_x, d_y - rect_offset_y,
                         bitmap, color);
 
-        if (round < 254) {
+        if (roundness < 254) {
             DRAW_CIRCLE(c_x + rect_offset_y, c_y + rect_offset_y,
                         rect_offset_y, bitmap, color);
             DRAW_CIRCLE(c_x + rect_offset_y, d_y - rect_offset_y,
