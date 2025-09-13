@@ -4,6 +4,7 @@
 #ifdef _WIN32
 
 #include "COLUMBITS_WINDOW.h"
+
 #include <windows.h>
 #include <stdlib.h>
 
@@ -13,10 +14,10 @@ typedef struct {
     BITMAPINFO bmi;
     _BITMAP* current_bitmap;
     bool should_close;
-} WIN32_WINDOW;
+} _WIN32_WINDOW;
 
 static LRESULT CALLBACK Win32_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
     
     switch (msg) {
         case WM_CLOSE:
@@ -45,8 +46,8 @@ static LRESULT CALLBACK Win32_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-static WINDOW_HANDLE win32_create_window(const char* title, uint16_t width, uint16_t height) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)calloc(1, sizeof(WIN32_WINDOW));
+static _WINDOW_HANDLE win32_create_window(const char* title, uint16_t width, uint16_t height) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)calloc(1, sizeof(_WIN32_WINDOW));
     
     WNDCLASS wc = {0};
     wc.lpfnWndProc = Win32_WindowProc;
@@ -79,11 +80,11 @@ static WINDOW_HANDLE win32_create_window(const char* title, uint16_t width, uint
     window->bmi.bmiHeader.biBitCount = 32;
     window->bmi.bmiHeader.biCompression = BI_RGB;
     
-    return (WINDOW_HANDLE)window;
+    return (_WINDOW_HANDLE)window;
 }
 
-static void win32_destroy_window(WINDOW_HANDLE handle) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)handle;
+static void win32_destroy_window(_WINDOW_HANDLE handle) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)handle;
     if (window) {
         ReleaseDC(window->hwnd, window->hdc);
         DestroyWindow(window->hwnd);
@@ -91,19 +92,19 @@ static void win32_destroy_window(WINDOW_HANDLE handle) {
     }
 }
 
-static void win32_show_window(WINDOW_HANDLE handle) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)handle;
+static void win32_show_window(_WINDOW_HANDLE handle) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)handle;
     ShowWindow(window->hwnd, SW_SHOW);
     UpdateWindow(window->hwnd);
 }
 
-static void win32_hide_window(WINDOW_HANDLE handle) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)handle;
+static void win32_hide_window(_WINDOW_HANDLE handle) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)handle;
     ShowWindow(window->hwnd, SW_HIDE);
 }
 
-static bool win32_poll_event(WINDOW_HANDLE handle, WINDOW_EVENT* event) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)handle;
+static bool win32_poll_event(_WINDOW_HANDLE handle, _EVT* event) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)handle;
     MSG msg;
     
     event->type = EVENT_NONE;
@@ -157,16 +158,16 @@ static bool win32_poll_event(WINDOW_HANDLE handle, WINDOW_EVENT* event) {
     return false;
 }
 
-static void win32_wait_event(WINDOW_HANDLE handle, WINDOW_EVENT* event) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)handle;
+static void win32_wait_event(_WINDOW_HANDLE handle, _EVT* event) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)handle;
     MSG msg;
     
     WaitMessage();
     win32_poll_event(handle, event);
 }
 
-static void win32_present_bitmap(WINDOW_HANDLE handle, _BITMAP* bitmap) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)handle;
+static void win32_present_bitmap(_WINDOW_HANDLE handle, _BITMAP* bitmap) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)handle;
     window->current_bitmap = bitmap;
     
     // Convert RGBA to BGRA for Windows
@@ -192,8 +193,8 @@ static void win32_present_bitmap(WINDOW_HANDLE handle, _BITMAP* bitmap) {
     }
 }
 
-static void win32_get_window_size(WINDOW_HANDLE handle, uint16_t* width, uint16_t* height) {
-    WIN32_WINDOW* window = (WIN32_WINDOW*)handle;
+static void win32_get_window_size(_WINDOW_HANDLE handle, uint16_t* width, uint16_t* height) {
+    _WIN32_WINDOW* window = (_WIN32_WINDOW*)handle;
     RECT rect;
     GetClientRect(window->hwnd, &rect);
     *width = rect.right - rect.left;
@@ -223,7 +224,7 @@ static WINDOW_PLATFORM win32_platform = {
 };
 
 // Set the global platform pointer
-WINDOW_PLATFORM* g_platform = &win32_platform;
+_WINDOW_PLATFORM* g_platform = &win32_platform;
 
 #endif // _WIN32
 #endif // COLUMBITS_WINAPI_H

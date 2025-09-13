@@ -21,32 +21,32 @@ typedef enum {
 typedef struct {
     _EVT_TYPE type;
     union {
-        struct {uint16_t w, h; } resize;
+        struct { uint16_t w, h; } resize;
         struct { uint32_t keycode; } key;
         struct { int16_t x, y; uint8_t button; } mouse;
     } data;
 } _EVT;
 
 typedef struct {
-    WINDOW_HANDLE (*create_window)(const char* title, uint16_t width, uint16_t height);
-    void (*destroy_window)(WINDOW_HANDLE window);
-    void (*show_window)(WINDOW_HANDLE window);
-    void (*hide_window)(WINDOW_HANDLE window);
+    _WINDOW_HANDLE (*create_window)(const char* title, uint16_t width, uint16_t height);
+    void (*destroy_window)(_WINDOW_HANDLE window);
+    void (*show_window)(_WINDOW_HANDLE window);
+    void (*hide_window)(_WINDOW_HANDLE window);
     
     // Event handling
-    bool (*poll_event)(WINDOW_HANDLE window, WINDOW_EVENT* event);
-    void (*wait_event)(WINDOW_HANDLE window, WINDOW_EVENT* event);
+    bool (*poll_event)(_WINDOW_HANDLE window, _EVT* event);
+    void (*wait_event)(_WINDOW_HANDLE window, _EVT* event);
     
     // Rendering
-    void (*present_bitmap)(WINDOW_HANDLE window, _BITMAP* bitmap);
-    void (*get_window_size)(WINDOW_HANDLE window, uint16_t* width, uint16_t* height);
+    void (*present_bitmap)(_WINDOW_HANDLE window, _BITMAP* bitmap);
+    void (*get_window_size)(_WINDOW_HANDLE window, uint16_t* width, uint16_t* height);
     
     // Platform specific
     void (*init_platform)(void);
     void (*shutdown_platform)(void);
 } _WINDOW_PLATFORM
 
-extern WINDOW_PLATFORM* g_platform;
+extern _WINDOW_PLATFORM* g_platform;
 
 // Convenience macros for cleaner API
 #define CREATE_WINDOW(title, w, h) g_platform->create_window(title, w, h)
