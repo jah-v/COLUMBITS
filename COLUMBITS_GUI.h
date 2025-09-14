@@ -20,17 +20,18 @@ typedef struct {
 
 _WIDGET NEW_WIDGET(   _TEXT text,
                       uint16_t size,
-                      _COLOR color    );
+                      _COLOR colorA,
+                      _COLOR colorB    );
 
 _WIDGET_BAR* BIND_WIDGET(
                       _WIDGET child,
                       _WIDGET_BAR* parent,
-                      _EVENT event    );
+                      _EVT event    );
 
 _WIDGET_BAR* UNBIND_WIDGET(
                       _WIDGET child,
                       _WIDGET_BAR* parent,
-                      _EVENT event    );
+                      _EVT event    );
 
 _WIDGET_BAR* NEW_WIDGET_BAR(
                       uint16_t w,
