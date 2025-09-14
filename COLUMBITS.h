@@ -32,7 +32,7 @@ inline uint32_t distance_from(
 
 void REPORT_ERROR();
 
-_BITMAP CREATE_BITMAP(
+_BITMAP NEW_BITMAP(
                     uint16_t w, uint16_t h,
                     _COLOR color
 );
@@ -160,7 +160,7 @@ _RECTANGLE DRAW_RECTANGLE(
                     _BITMAP* bitmap, _COLOR color
 ) {
     for (int y = smaller_of(a_y, b_y); y < larger_of(a_y, b_y); ++y) {
-        for (int x = smaller_of(a_x, b_x); y < larger_of(a_x, b_x); ++x) {
+        for (int x = smaller_of(a_x, b_x); x < larger_of(a_x, b_x); ++x) {
             bitmap->pixels[(y*bitmap->w + x)].r = color.r;
             bitmap->pixels[(y*bitmap->w + x)].g = color.g;
             bitmap->pixels[(y*bitmap->w + x)].b = color.b;
@@ -194,7 +194,7 @@ _BITMAP* MERGE_BITMAPS(
 }
 
 
-_BITMAP CREATE_BITMAP(
+_BITMAP NEW_BITMAP(
                     uint16_t w, uint16_t h,
                     _COLOR color
 ) {
