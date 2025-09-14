@@ -43,12 +43,6 @@ _BITMAP* SCALE_BITMAP(
                     uint8_t flags
 );
 
-_BITMAP* SWAP_BITMAPS(
-                    _BITMAP* interior,
-                    _BITMAP* exterior,
-                    uint8_t flags
-);
-
 _BITMAP* MERGE_BITMAPS(
                     _BITMAP* parent,
                     _BITMAP* child,

@@ -49,13 +49,13 @@ typedef struct {
 extern _WINDOW_PLATFORM* g_platform;
 
 // Convenience macros for cleaner API
-#define CREATE_WINDOW(title, w, h) g_platform->create_window(title, w, h)
+#define NEW_WINDOW(title, w, h) g_platform->create_window(title, w, h)
 #define DESTROY_WINDOW(window) g_platform->destroy_window(window)
 #define SHOW_WINDOW(window) g_platform->show_window(window)
-#define POLL_EVENT(window, event) g_platform->poll_event(window, event)
-#define PRESENT_BITMAP(window, bitmap) g_platform->present_bitmap(window, bitmap)
-#define INIT_PLATFORM() g_platform->init_platform()
-#define SHUTDOWN_PLATFORM() g_platform->shutdown_platform()
+#define POLL_EVENTS(window, event) g_platform->poll_event(window, event)
+#define SWAP_BITMAPS(window, bitmap) g_platform->present_bitmap(window, bitmap)
+#define COLUMBITS_INIT() g_platform->init_platform()
+#define COLUMBITS_SHUTDOWN() g_platform->shutdown_platform()
 
 #ifdef _WIN32
 

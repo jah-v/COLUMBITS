@@ -30,13 +30,13 @@ int main() {
                 running = false;
                 break;
         }
-        PRESENT_BITMAP(window, &canvas);
+        SWAP_BITMAPS(window, &canvas);
         }
     }
 
     free(canvas.pixels);
     DESTROY_WINDOW(window);
-    SHUTDOWN_PLATFORM();
+    COLUMBITS_SHUTDOWN();
 
     return 0;
 }
