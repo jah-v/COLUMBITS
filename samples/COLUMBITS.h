@@ -70,12 +70,17 @@ _BITMAP* DRAW_ROUNDTANGLE(
                     _COLOR color
 );
 
-_FONT* NEW_FONT();
+_TEXTURE* STRING_TO_TEXTURE(
+                    char* str,
+                    uint16_t str_length,
+                    uint16_t width,
+                    uint16_t height
+);
 
 _FONT* SYSTEM_FONT();
 
 _TEXT* NEW_TEXT(
-                    char* c,
+                    char* str,
                     uint16_t length,
                     uint16_t font_size,
                     _BITMAP* font,
@@ -86,6 +91,38 @@ _BITMAP* DRAW_TEXT(
                     _TEXT* text,
                     _RECTANGLE parent
 );
+
+_TEXT* NEW_TEXT(
+                    char* str,
+                    uint16_t length,
+                    uint16_t font_size,
+                    _FONT* font,
+                    uint8_t style
+) {
+    _TEXT text;
+    text.str = str;
+    text.str_length = length;
+    if (!font_size) { text.font_size = 16; } 
+    else { text.font_size = font_size; };
+    if (!font) { text.font = SYSTEM_FONT; } 
+    else { text.font = font };
+    if (!style) { style = 0; };
+    else { text.style = style; };
+
+}
+
+_FONT* SYSTEM_FONT() {
+    
+}
+
+_TEXTURE* STRING_TO_TEXTURE(
+                    char* str,
+                    uint16_t str_length,
+                    uint16_t width,
+                    uint16_t height
+);
+
+
 
 _BITMAP* DRAW_ROUNDTANGLE(
                     uint16_t a_x, uint16_t a_y,
