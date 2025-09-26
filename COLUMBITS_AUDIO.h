@@ -1,3 +1,0 @@
-#ifndef COLUMBITS_AUDIO_H
-#define COLUMBITS_AUDIO_H
-#endif // COLUMBITS_AUDIO_H
